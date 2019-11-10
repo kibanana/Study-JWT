@@ -1,0 +1,44 @@
+{
+  "name": "study_jwt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyw017763/Study_JWT.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kyw017763/Study_JWT/issues"
+  },
+  "homepage": "https://github.com/kyw017763/Study_JWT#readme",
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "extends": "airbnb-base",
+    "rules": {
+      "linebreak-style": 0,
+      "no-console": 0,
+      "no-unused-vars": 1
+    }
+  },
+  "babel": {
+    "presets": ["@babel/preset-env"]
+  },
+  "dependencies": {
+    "babel-eslint": "^10.0.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/node": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2"
+  }
+}
