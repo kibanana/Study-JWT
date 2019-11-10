@@ -1,4 +1,12 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
+import config from '../config';
+
+const connection = mongoose.createConnection(config.mongodbUri, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
+  if (err) {
+    console.log('Connected failed');
+  }
+  console.log('Connected successfully to server');
+});
 
 const User = new mongoose.Schema({
   username: String,
@@ -18,7 +26,7 @@ User.statics.create = function (username, password) {
 User.statics.findOneByUsername = function (username) {
   return this.findOne({
     username,
-  }).exec();
+  });
 };
 
 User.methods.verify = function (password) {
@@ -30,4 +38,4 @@ User.methods.assignAdmin = function () {
   return this.save();
 };
 
-export default mongoose.model('users', User);
+export default connection.model('users', User);
