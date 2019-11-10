@@ -26,10 +26,13 @@
     }
   },
   "babel": {
-    "presets": ["@babel/preset-env"]
+    "presets": [
+      "@babel/preset-env"
+    ]
   },
   "dependencies": {
-    "babel-eslint": "^10.0.3"
+    "babel-eslint": "^10.0.3",
+    "crypto": "^1.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.0",
