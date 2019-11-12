@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import crypto from 'crypto';
 import config from '../config';
 
 // eslint-disable-next-line max-len
@@ -16,9 +17,12 @@ const User = new mongoose.Schema({
 });
 
 User.statics.create = function (username, password) {
+  const encrypted = crypto.createHmac('sha562', config.secret)
+    .update(password)
+    .digest('base64');
   const user = new this({
     username,
-    password,
+    password: encrypted,
   });
 
   return user.save();
@@ -31,6 +35,9 @@ User.statics.findOneByUsername = function (username) {
 };
 
 User.methods.verify = function (password) {
+  cosnt encrypted = crypto.createHmac('sha562', config.secret)
+  .update(password)
+  .digest('base64');
   return this.password === password;
 };
 
