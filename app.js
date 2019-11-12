@@ -16,7 +16,7 @@ app.use(morgan('dev'));
 app.set('jwt-secret', config.secret);
 
 app.use('/', auth);
-app.use('users', user);
+app.use('/', user);
 
 app.get('/', (req, res) => {
   res.send('Hello JWT');

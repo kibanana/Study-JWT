@@ -2,9 +2,11 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 
+import authMiddleware from '../../middlewares/authorization';
 import User from '../../models/user';
 
 const router = express.Router();
+
 router.post('/register', (req, res) => {
   const { username, password } = req.body;
   let newUser;
@@ -111,42 +113,16 @@ router.post('/login', (req, res) => {
     .catch((err) => onError(err));
 });
 
+router.use('/check', authMiddleware);
+
 // Header의 x-access-token 또는
 // URI에 queryString의 token값으로 넘긴다
 // eslint-disable-next-line consistent-return
-router.post('/check', (req, res) => {
-  const token = req.headers['x-access-token'] || req.query.token;
-  if (!token) {
-    return res.status(403).json({
-      success: false,
-      message: 'login is failed!',
-    });
-  }
-
-  const p = new Promise((resolve, reject) => {
-    jwt.verify(token, req.app.get('jwt-secret'), (err, decoded) => {
-      if (err) reject(err);
-      resolve(decoded);
-    });
+router.get('/check', (req, res) => {
+  res.json({
+    success: true,
+    info: req.decoded,
   });
-
-  const response = (t) => {
-    res.json({
-      success: true,
-      info: t,
-    });
-  };
-
-  const onError = (error) => {
-    res.status(403).json({
-      sucess: false,
-      message: error.message,
-    });
-  };
-
-  p
-    .then((t) => response(t))
-    .catch((err) => onError(err));
 });
 
 export default router;

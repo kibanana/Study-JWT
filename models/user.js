@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import config from '../config';
 
+// eslint-disable-next-line max-len
 const connection = mongoose.createConnection(config.mongodbUri, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
   if (err) {
     console.log('Connected failed');
