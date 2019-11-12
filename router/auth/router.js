@@ -1,4 +1,6 @@
+/* eslint-disable no-underscore-dangle */
 import express from 'express';
+import jwt from 'jsonwebtoken';
 
 import User from '../../models/user';
 
@@ -47,19 +49,104 @@ router.post('/register', (req, res) => {
   };
 
   User.findOneByUsername(username)
-    .then((user) => {
-      return create(user);
-    })
-    .then((user) => {
-      return count(user);
-    })
-    .then((cnt) => {
-      return assign(cnt);
-    })
-    .then((user) => {
-      return response(user);
-    })
+    .then((user) => create(user))
+    .then((user) => count(user))
+    .then((cnt) => assign(cnt))
+    .then((user) => response(user))
     .catch(onError);
+});
+
+router.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  const secret = req.app.get('jwt-secret');
+
+  const check = (user) => {
+    if (!user) {
+      throw new Error('login failed!');
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (user.verify(password)) {
+        const p = new Promise((resolve, reject) => {
+          jwt.sign(
+            {
+              _id: user._id,
+              username: user.username,
+              admin: user.admin,
+            },
+            secret,
+            {
+              expiresIn: '1d',
+              issuer: 'woni',
+              subject: 'userStatus',
+            }, (err, token) => {
+              if (err) reject(err);
+              else resolve(token);
+            },
+          );
+        });
+        return p;
+      // eslint-disable-next-line no-else-return
+      } else {
+        throw new Error('login failed!');
+      }
+    }
+  };
+
+  const response = (token) => {
+    res.json({
+      message: 'login was suceessful!',
+      token,
+    });
+  };
+
+  const onError = (error) => {
+    res.status(403).json({
+      message: error.message,
+    });
+  };
+
+  User.findOneByUsername(username)
+    .then((user) => check(user))
+    .then((user) => response(user))
+    .catch((err) => onError(err));
+});
+
+// Header의 x-access-token 또는
+// URI에 queryString의 token값으로 넘긴다
+// eslint-disable-next-line consistent-return
+router.post('/check', (req, res) => {
+  const token = req.headers['x-access-token'] || req.query.token;
+  if (!token) {
+    return res.status(403).json({
+      success: false,
+      message: 'login is failed!',
+    });
+  }
+
+  const p = new Promise((resolve, reject) => {
+    jwt.verify(token, req.app.get('jwt-secret'), (err, decoded) => {
+      if (err) reject(err);
+      resolve(decoded);
+    });
+  });
+
+  const response = (t) => {
+    res.json({
+      success: true,
+      info: t,
+    });
+  };
+
+  const onError = (error) => {
+    res.status(403).json({
+      sucess: false,
+      message: error.message,
+    });
+  };
+
+  p
+    .then((t) => response(t))
+    .catch((err) => onError(err));
 });
 
 export default router;
