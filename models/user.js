@@ -17,7 +17,7 @@ const User = new mongoose.Schema({
 });
 
 User.statics.create = function (username, password) {
-  const encrypted = crypto.createHmac('sha562', config.secret)
+  const encrypted = crypto.createHmac('sha1', config.secret)
     .update(password)
     .digest('base64');
   const user = new this({
@@ -35,10 +35,10 @@ User.statics.findOneByUsername = function (username) {
 };
 
 User.methods.vertify = function (password) {
-  const encrypted = crypto.createHmac('sha562', config.secret)
+  const encrypted = crypto.createHmac('sha1', config.secret)
     .update(password)
     .digest('base64');
-  return this.password === password;
+  return this.password === encrypted;
 };
 
 User.methods.assignAdmin = function () {
