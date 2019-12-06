@@ -34,10 +34,10 @@ User.statics.findOneByUsername = function (username) {
   });
 };
 
-User.methods.verify = function (password) {
-  cosnt encrypted = crypto.createHmac('sha562', config.secret)
-  .update(password)
-  .digest('base64');
+User.methods.vertify = function (password) {
+  const encrypted = crypto.createHmac('sha562', config.secret)
+    .update(password)
+    .digest('base64');
   return this.password === password;
 };
 
