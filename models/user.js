@@ -11,7 +11,7 @@ const connection = mongoose.createConnection(config.mongodbUri, { useNewUrlParse
 });
 
 const User = new mongoose.Schema({
-  username: String,
+  username: { type: String, required: true },
   password: String,
   admin: { type: Boolean, default: false },
 });
